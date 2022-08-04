@@ -1,6 +1,8 @@
 import React from 'react';
-import {View} from "react-native";
+import {ActivityIndicator, Alert, Text, View} from "react-native";
 import styled from "styled-components/native/dist/styled-components.native.esm";
+import axios from "axios";
+import Loading from "../components/Loading";
 
 const PostImage = styled.Image`
   width: 100%;
@@ -13,15 +15,44 @@ const PostText = styled.Text`
   line-height: 24px;
 `;
 
-const FullPostScreen = () => {
+const FullPostScreen = ({route, navigation}) => {
+
+    const [data, setData] = React.useState([])
+    const [isLoading, setIsLoading] = React.useState(false)
+    const {id, title} = route.params
+
+    React.useEffect(() => {
+        navigation.setOptions({
+            title
+        })
+        setIsLoading(true)
+        axios.get(`https://62ea83f3ad295463258e8129.mockapi.io/article/${id}`)
+            .then(({data}) => {
+                setData(data)
+            })
+            .catch(err => {
+                console.log(err)
+                Alert.alert('Error', 'Failed get posts')
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
+
+    }, [])
+
+    if (isLoading) {
+        return (
+            <Loading/>
+        )
+    }
+
     return (
         <View style={{marginTop: 20}}>
             <PostImage
-                source={{uri: 'https://www.buro247.ua/thumb/670x830_0/images/2017/09/800-insta-of-the-week-sad-cat-luhu.jpg'}}/>
+                source={{uri: data.imageUrl}}/>
+
             <PostText>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad consequuntur cumque deleniti deserunt dolor
-                eligendi, eos labore laboriosam molestiae necessitatibus, neque nihil numquam quam quia quis sapiente
-                similique vero voluptates.
+                {data.text}
             </PostText>
         </View>
     );

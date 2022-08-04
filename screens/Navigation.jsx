@@ -1,57 +1,19 @@
-import React from 'react';
-import {ActivityIndicator, Alert, Text, View} from "react-native";
-import styled from "styled-components/native/dist/styled-components.native.esm";
-import axios from "axios";
-import Loading from "../components/Loading";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import HomeScreen from "./HomeScreen";
+import FullPostScreen from "./FullPostScreen";
+import {NavigationContainer} from "@react-navigation/native";
 
-const PostImage = styled.Image`
-  width: 100%;
-  height: 250px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-`;
-const PostText = styled.Text`
-  font-size: 18px;
-  line-height: 24px;
-`;
 
-const FullPostScreen = () => {
+const Stack = createNativeStackNavigator();
 
-    const [data, setData] = React.useState([])
-    const [isLoading, setIsLoading] = React.useState(false)
-
-    React.useEffect(() => {
-        setIsLoading(true)
-        axios.get('https://62ea83f3ad295463258e8129.mockapi.io/article/1')
-            .then(({data}) => {
-                setData(data)
-            })
-            .catch(err => {
-                console.log(err)
-                Alert.alert('Error', 'Failed get posts')
-            })
-            .finally(() => {
-                setIsLoading(false)
-            })
-
-    }, [])
-
-    if (isLoading) {
-        return (
-            <Loading/>
-        )
-    }
-
+export const Navigation = () => {
     return (
-        <View style={{marginTop: 20}}>
-            <PostImage
-                source={{uri: data.imageUrl}}/>
-
-            <PostText>
-                {data.text}
-            </PostText>
-        </View>
-    );
-};
-
-export default FullPostScreen;
+        <NavigationContainer>
+            {/*<Routes></Routes> => Stack.Navigator*/}
+            <Stack.Navigator>
+                <Stack.Screen name="Home" component={HomeScreen} options={{title: "News"}}/>
+                <Stack.Screen name="FullPosts" component={FullPostScreen} options={{title: "Posts"}}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
+}

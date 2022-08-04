@@ -1,5 +1,4 @@
 import styled from "styled-components/native/dist/styled-components.native.esm";
-import {Text} from "react-native";
 
 const PostView = styled.View`
   flex-direction: row;
@@ -43,17 +42,26 @@ const PostDetails = styled.View`
   flex: 1;
 `;
 
+const truncateTitle = (str) => {
+    if (str.length >= 50) {
+        return (
+            `${str.substring(0, 50)}...`
+        )
+    }
+    return str;
+}
+
 const Post = ({title, imageUrl, createdAt, text}) => {
     return (
         <PostWrapper>
             <PostView>
                 <PostImage source={{uri: imageUrl}}/>
                 <PostDetails>
-                    <PostTitle>{title}</PostTitle>
-                    <PostDate>{createdAt}</PostDate>
+                    <PostTitle>{truncateTitle(title)}</PostTitle>
+                    <PostDate>{new Date(createdAt).toLocaleDateString()}</PostDate>
                 </PostDetails>
             </PostView>
-            <PostText>{text}</PostText>
+            <PostText>{truncateTitle(text)}</PostText>
         </PostWrapper>
     )
 };
